@@ -447,13 +447,29 @@ class InstallToEgg(PythonCommand):
     flunkOnFailure = False
     description = ["install-to-egg"]
     name = "install-to-egg"
-    def __init__(self, egginstalldir="egginstalldir", *args, **kwargs):
-        python_command = ["-c", ("import glob, os, subprocess, sys;"
-                                 " os.mkdir('"+egginstalldir+"');"
-                                 " tahoe_egg = glob.glob(os.path.join('dist', '*.egg'))[0];"
-                                 " sys.exit(subprocess.call(['easy_install', '-d', '"+egginstalldir+"', tahoe_egg]))")]
 
-        kwargs['env'] = {"PYTHONPATH": egginstalldir}
+    def __init__(self, egginstalldir="egginstalldir", *args, **kwargs):
+        # This does the equivalent of:
+        #  mkdir _install_temp egginstalldir
+        #  cd _install_temp
+        #  PYTHONPATH=../egginstalldir easy_install -d ../egginstalldir ../dist/*.egg
+        #
+        # The temporary directory is necessary to keep certain versions of
+        # setuptools (at least distribute-0.6.10, as used on the troublesome
+        # buildslave) from seeing the Twisted egg that gets put into the
+        # source directory (due to a setup_requires= line that may be
+        # obsolete by now). If it sees that egg, it won't install Twisted
+        # into the egginstalldir, and then TestFromEgg doesn't work. See
+        # #2378 for details.
+
+        python_command = ["-c", ("import glob, os, subprocess, sys;"
+                                 " os.mkdir('_install_temp');"
+                                 " os.mkdir('"+egginstalldir+"');"
+                                 " tahoe_egg = os.path.realpath(glob.glob(os.path.join('dist', '*.egg'))[0]);"
+                                 " os.chdir('_install_temp');"
+                                 " sys.exit(subprocess.call(['easy_install', '-d', '../"+egginstalldir+"', tahoe_egg]))")]
+
+        kwargs['env'] = {"PYTHONPATH": "../"+egginstalldir}
         kwargs['python_command'] = python_command
         PythonCommand.__init__(self, *args, **kwargs)
         self.addFactoryArguments(egginstalldir=egginstalldir)
@@ -524,32 +540,19 @@ class TestFromEgg(PythonCommand):
     name = "test-from-egg"
 
     def __init__(self, testsuite=None, egginstalldir="egginstalldir", srcbasedir=".", *args, **kwargs):
+        pcmd = (
+            "import glob,os,subprocess,sys;"
+            "os.chdir('"+srcbasedir+"');"
+            "os.chdir('"+egginstalldir+"');"
+            "os.environ['PATH']=os.getcwd()+os.pathsep+os.environ['PATH'];"
+            "os.environ['PYTHONPATH']=os.path.realpath('.')+os.pathsep+os.environ.get('PYTHONPATH','');"
+            )
         if testsuite:
             assert isinstance(testsuite, basestring)
-            pcmd = (
-                "import glob,os,subprocess,sys;"
-                "trial=os.path.join(os.getcwd(), 'misc', 'build_helpers', 'run_trial.py');"
-                "os.chdir('"+srcbasedir+"');"
-                "eggs=[os.path.realpath(egg) for egg in glob.glob('*.egg')];"
-                "testsuite='"+testsuite+"';"
-                "os.chdir('"+egginstalldir+"');"
-                "eggs+=[os.path.realpath(egg) for egg in glob.glob('*.egg')];"
-                "os.environ['PATH']=os.getcwd()+os.pathsep+os.environ['PATH'];"
-                "os.environ['PYTHONPATH']=os.pathsep.join(eggs)+os.pathsep+os.environ.get('PYTHONPATH','');"
-                "sys.exit(subprocess.call([sys.executable, trial, testsuite], env=os.environ))")
-
+            pcmd += ("sys.exit(subprocess.call([sys.executable, 'tahoe', 'debug', 'trial', '%s'], env=os.environ))"
+                     % (testsuite,))
         else:
-            pcmd = (
-                "import glob,os,subprocess,sys;"
-                "trial=os.path.join(os.getcwd(), 'misc', 'build_helpers', 'run_trial.py');"
-                "os.chdir('"+srcbasedir+"');"
-                "eggs=[os.path.realpath(egg) for egg in glob.glob('*.egg')];"
-                "testsuite=subprocess.Popen([sys.executable, 'setup.py', '--name'], stdout=subprocess.PIPE).communicate()[0].strip()+'.test';"
-                "os.chdir('"+egginstalldir+"');"
-                "eggs+=[os.path.realpath(egg) for egg in glob.glob('*.egg')];"
-                "os.environ['PATH']=os.getcwd()+os.pathsep+os.environ['PATH'];"
-                "os.environ['PYTHONPATH']=os.pathsep.join(eggs)+os.pathsep+os.environ.get('PYTHONPATH','');"
-                "sys.exit(subprocess.call([sys.executable, trial, testsuite], env=os.environ))")
+            pcmd += ("sys.exit(subprocess.call([sys.executable, 'tahoe', 'debug', 'trial'], env=os.environ))")
 
         python_command = ["-c", pcmd]
         logfiles = {"test.log": egginstalldir+"/_trial_temp/test.log"}
