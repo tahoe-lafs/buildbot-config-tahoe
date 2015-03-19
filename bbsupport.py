@@ -121,24 +121,6 @@ class BuiltTest(PythonCommand):
                                  for t in tests]) + "\n"
             self.addCompleteLog("timings", timings)
 
-class TestOSXPackage(PythonCommand):
-    """
-    Step to run the OS X packaging test.
-    """
-    flunkOnFailure = True
-    description = ["test-osx-package"]
-    name = "test-osx-package"
-    python_command = ["misc/build_helpers/test-osx-package.py"]
-
-class TestWindowsPackage(PythonCommand):
-    """
-    Step to run the Windows packaging test.
-    """
-    flunkOnFailure = True
-    description = ["test-windows-package"]
-    name = "test-windows-package"
-    python_command = ["misc/build_helpers/test-windows-package.py"]
-
 class TestOldDep(PythonCommand):
     """
     Run a special test to confirm that the build system builds a new
