@@ -121,6 +121,28 @@ class BuiltTest(PythonCommand):
                                  for t in tests]) + "\n"
             self.addCompleteLog("timings", timings)
 
+class TestDeprecations(PythonCommand):
+    warnOnFailure = False
+    flunkOnFailure = False
+    name = "deprecations"
+    description = ["testing", "deprecations"]
+    descriptionDone = ["test", "deprecations"]
+    logfiles = {"test.log": "_trial_temp/test.log"}
+    env = {"PYTHONWARNINGS": "default::DeprecationWarning"}
+    python_command = ["setup.py", "test"]
+
+    def createSummary(self, log):
+        # create a logfile with the de-duped DeprecationWarning messages
+        warnings = set()
+        warn_re = re.compile(r'DeprecationWarning: ')
+        for line in log.readlines():
+            line = line.strip()
+            mo = warn_re.search(line)
+            if mo:
+                warnings.add(line)
+        if warnings:
+            self.addCompleteLog("warnings", "\n".join(sorted(warnings))+"\n")
+
 class TestOldDep(PythonCommand):
     """
     Run a special test to confirm that the build system builds a new
