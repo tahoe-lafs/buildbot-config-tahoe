@@ -128,8 +128,11 @@ class TestDeprecations(PythonCommand):
     description = ["testing", "deprecations"]
     descriptionDone = ["test", "deprecations"]
     logfiles = {"test.log": "_trial_temp/test.log"}
-    env = {"PYTHONWARNINGS": "default::DeprecationWarning"}
     python_command = ["setup.py", "test"]
+
+    def __init__(self, *args, **kwargs):
+        kwargs["env"] = {"PYTHONWARNINGS": "default::DeprecationWarning"}
+        ShellCommand.__init__(self, *args, **kwargs)
 
     def createSummary(self, log):
         # create a logfile with the de-duped DeprecationWarning messages
