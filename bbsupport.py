@@ -499,22 +499,6 @@ class InstallToEgg(PythonCommand):
         PythonCommand.__init__(self, *args, **kwargs)
         self.addFactoryArguments(egginstalldir=egginstalldir)
 
-class InstallToPrefixDir(PythonCommand):
-    """
-    Step to install into a temporary install directory using --prefix.
-    """
-
-    flunkOnFailure = False
-    description = ["install-to-prefix"]
-    name = "install-to-prefix"
-
-    def __init__(self, prefixinstalldir="prefixinstalldir", *args, **kwargs):
-        python_command = ["-c", ("import subprocess, sys;"
-                             "sys.exit(subprocess.call([sys.executable, 'setup.py', 'install', '--single-version-externally-managed', '--record=record.txt', '--prefix', '"+prefixinstalldir+"']))")]
-        kwargs['python_command'] = python_command
-        PythonCommand.__init__(self, *args, **kwargs)
-        self.addFactoryArguments(prefixinstalldir=prefixinstalldir)
-
 class TestFromEggTrial(PythonCommand):
     """
     Step to run the Tahoe-LAFS tests from the egg-installation. With Trial!
@@ -585,90 +569,6 @@ class TestFromEgg(PythonCommand):
         kwargs['logfiles'] = logfiles
         PythonCommand.__init__(self, *args, **kwargs)
         self.addFactoryArguments(testsuite=testsuite, egginstalldir=egginstalldir, srcbasedir=srcbasedir)
-
-class TestFromPrefixDirPyunit(PythonCommand):
-    """
-    Step to run pyunit from a --prefix=installdir installation.
-    """
-    flunkOnFailure = True
-    description = ["pyunit-from-prefixdir"]
-    name = "pyunit-from-prefixdir"
-
-    def __init__(self, testsuite, prefixinstalldir="prefixinstalldir", srcbasedir=".", *args, **kwargs):
-        assert isinstance(testsuite, basestring)
-        pcmd = (
-            "import copy,os,platform,sys,unittest;"
-            "os.chdir('"+srcbasedir+"');"
-            "prefixinstdir=os.path.join(os.getcwd(), 'prefixinstalldir');"
-            "pyver='python'+sys.version[:3];"
-            "platlib='lib'+platform.architecture()[0][:2];"
-            "platlibdir=os.path.join(os.getcwd(), 'prefixinstalldir', platlib, pyver, 'site-packages');"
-            "pylibdir=os.path.join(os.getcwd(), 'prefixinstalldir', 'lib', pyver, 'site-packages');"
-            "winlibdir=os.path.join(os.getcwd(), 'prefixinstalldir', 'Lib', 'site-packages');"
-            "win=sys.platform.lower().startswith('win');"
-            "sys.path[:0]=(win and [winlibdir] or [platlibdir, pylibdir]);"
-            "libdir=(sys.platform.lower().startswith('win') and winlibdir or (platlibdir+os.pathsep+pylibdir));"
-            "bindir=sys.platform.lower().startswith('win') and 'Scripts' or 'bin';"
-            "env=copy.copy(os.environ);"
-            "env['PATH']=bindir+os.pathsep+env.get('PATH','');"
-            "env['PYTHONPATH']=libdir+os.pathsep+env.get('PYTHONPATH','');"
-            "os.chdir('prefixinstalldir');"
-            "test = unittest.defaultTestLoader.loadTestsFromName('"+testsuite+"');"
-            "runner = unittest.TextTestRunner(verbosity=2);"
-            "result = runner.run(test);"
-            "sys.exit(not result.wasSuccessful());")
-        python_command = ["-c", pcmd]
-        kwargs['python_command'] = python_command
-        PythonCommand.__init__(self, *args, **kwargs)
-        self.addFactoryArguments(testsuite=testsuite, prefixinstalldir=prefixinstalldir, srcbasedir=srcbasedir)
-
-
-class TestFromPrefixDirRunTrial(PythonCommand):
-    """
-    Step to run the Tahoe-LAFS tests from a --prefix=installdir installation.
-    """
-    flunkOnFailure = True
-    description = ["test-from-prefixdir"]
-    name = "test-from-prefixdir"
-
-    def __init__(self, testsuite=None, prefixinstalldir="prefixinstalldir", srcbasedir=".", *args, **kwargs):
-        if testsuite:
-            assert isinstance(testsuite, basestring)
-            pcmd = (
-                    "import copy,os,subprocess,sys;"
-                    "trial=os.path.join(os.getcwd(), 'misc', 'build_helpers', 'run_trial.py');"
-                    "os.chdir('"+srcbasedir+"');"
-                    "testsuite='"+testsuite+"';"
-                    "prefixinstdir=os.path.join(os.getcwd(), 'prefixinstalldir');"
-                    "libdir=(('win32' in sys.platform.lower()) and os.path.join(os.getcwd(), 'prefixinstalldir', 'Lib', 'site-packages') or os.path.join(os.getcwd(), 'prefixinstalldir', 'lib', 'python%(ver)s' % {'ver': sys.version[:3]}, 'site-packages'));"
-                    "bindir=('win32' in sys.platform.lower()) and 'Scripts' or 'bin';"
-                    "env=copy.copy(os.environ);"
-                    "env['PATH']=bindir+os.pathsep+env.get('PATH','');"
-                    "env['PYTHONPATH']=libdir+os.pathsep+env.get('PYTHONPATH','');"
-                    "os.chdir('prefixinstalldir');"
-                    "sys.exit(subprocess.call([sys.executable, trial, '--reporter=bwverbose', testsuite], env=env))")
-        else:
-            pcmd = (
-                    "import copy,os,subprocess,sys;"
-                    "trial=os.path.join(os.getcwd(), 'misc', 'build_helpers', 'run_trial.py');"
-                    "os.chdir('"+srcbasedir+"');"
-                    "testsuite=subprocess.Popen([sys.executable, 'setup.py', '--name'], stdout=subprocess.PIPE).communicate()[0].strip()+'.test';"
-                    "prefixinstdir=os.path.join(os.getcwd(), 'prefixinstalldir');"
-                    "libdir=(('win32' in sys.platform.lower()) and os.path.join(os.getcwd(), 'prefixinstalldir', 'Lib', 'site-packages') or os.path.join(os.getcwd(), 'prefixinstalldir', 'lib', 'python%(ver)s' % {'ver': sys.version[:3]}, 'site-packages'));"
-                    "bindir=('win32' in sys.platform.lower()) and 'Scripts' or 'bin';"
-                    "env=copy.copy(os.environ);"
-                    "env['PATH']=bindir+os.pathsep+env.get('PATH','');"
-                    "env['PYTHONPATH']=libdir+os.pathsep+env.get('PYTHONPATH','');"
-                    "os.chdir('prefixinstalldir');"
-                    "sys.exit(subprocess.call([sys.executable, trial, '--reporter=bwverbose', testsuite], env=env))")
-        python_command = ["-c", pcmd]
-        logfiles = {"test.log": prefixinstalldir+"/_trial_temp/test.log"}
-        kwargs['python_command'] = python_command
-        kwargs['logfiles'] = logfiles
-        PythonCommand.__init__(self, *args, **kwargs)
-        self.addFactoryArguments(testsuite=testsuite, prefixinstalldir=prefixinstalldir, srcbasedir=srcbasedir)
-
-TestFromPrefixDir = TestFromPrefixDirRunTrial
 
 class LineCount(ShellCommand):
     name = "line-count"
