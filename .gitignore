@@ -32,7 +32,7 @@ tahoe/git/Markus_slackware64_stable/
 tahoe/git/Ubuntu_trusty_14_04/
 tahoe/git/sickness_OpenBSD_5_6_x86_py2_7/
 tahoe/git/Daira_Win7-64_py2_7/
-tahoe/git/Warner_OS-X_10_10_py2_7
+tahoe/git/Warner_OS-X_10_11_py2_7
 
 tahoe/git/tahoe-memstats-32.out
 tahoe/git/tahoe-memstats-64.out
@@ -50,7 +50,7 @@ pycryptopp-git/elb_debian6_ppc64/
 pycryptopp-git/francois-ts109-armv5tel_syslib/
 pycryptopp-git/marcusw_cygwin/
 pycryptopp-git/oldlogs/
-pycryptopp-git/OS-X_10_10/
+pycryptopp-git/OS-X_10_11/
 pycryptopp-git/trusty_14_04/
 pycryptopp-git/trusty_14_04_syslib/
 
