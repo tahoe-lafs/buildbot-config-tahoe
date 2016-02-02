@@ -138,7 +138,7 @@ class TestDeprecations(PythonCommand):
         # create a logfile with the de-duped DeprecationWarning messages
         warnings = set()
         warn_re = re.compile(r'DeprecationWarning: ')
-        for line in log.readlines():
+        for line in log.readlines(): # add stderr
             line = line.strip()
             mo = warn_re.search(line)
             if mo:
