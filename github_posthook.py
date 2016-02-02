@@ -28,7 +28,7 @@ from twisted.internet import defer
 from twisted.web.resource import Resource
 
 from buildbot.changes.base import ChangeSource
-from .iso9601 import parse_iso9601
+from iso9601 import parse_iso9601
 
 class GithubHookChangeSource(ChangeSource):
     def addChangeFromHook(self, ign, payload, change, branch):
