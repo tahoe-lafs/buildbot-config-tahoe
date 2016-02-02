@@ -24,25 +24,11 @@ this URL into the 'Post-Receive URLs' section.
 """
 
 import json
-import re
 from twisted.internet import defer
 from twisted.web.resource import Resource
-from datetime import datetime, timedelta
 
 from buildbot.changes.base import ChangeSource
-
-def parse_iso9601(s):
-    # returns a datetime. sometimes I hate python
-    # note: look at http://pypi.python.org/pypi/iso8601plus/0.1.6
-    mo = re.search(r'^([\d\-]+T(?:\d+):(?:\d+):(?:\d+))(.*)$', s)
-    time_string = mo.group(1) ; tz_string = mo.group(2)
-    mo = re.search(r'^([+-]*)(\d+):(\d+)$', tz_string)
-    tz_sign = mo.group(1) ; tz_hour = mo.group(2); tz_min = mo.group(3)
-    d = datetime.strptime(time_string, "%Y-%m-%dT%H:%M:%S")
-    offset_seconds = (60*int(tz_hour)+int(tz_min))*60
-    if tz_sign == "-":
-        offset_seconds = -offset_seconds
-    return d + timedelta(seconds=-offset_seconds)
+from .iso9601 import parse_iso9601
 
 class GithubHookChangeSource(ChangeSource):
     def addChangeFromHook(self, ign, payload, change, branch):
