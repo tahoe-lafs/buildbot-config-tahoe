@@ -608,7 +608,7 @@ class CheckMemory(ShellCommand):
 
     def __init__(self, platform, command, *args, **kwargs):
         ShellCommand.__init__(self, *args, **kwargs)
-        self.addFactoryArguments(platform=platform, MAKE=MAKE)
+        self.addFactoryArguments(platform=platform, command=command)
         self.platform = platform
         self.command = command
 
