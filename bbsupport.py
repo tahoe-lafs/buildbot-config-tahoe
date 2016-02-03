@@ -111,8 +111,8 @@ class BuiltTest(PythonCommand):
                 continue
             mo = time_re.search(line.strip())
             if mo:
-                t = float(mo.group(1))
-                tests.append( (t, last_test) )
+                t0 = float(mo.group(1))
+                tests.append( (t0, last_test) )
                 last_test = None
         tests.sort()
         tests.reverse()
