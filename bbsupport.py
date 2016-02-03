@@ -606,11 +606,11 @@ class CheckMemory(ShellCommand):
                 "driver": "_test_memory/driver.log",
                 }
 
-    def __init__(self, platform, MAKE, *args, **kwargs):
+    def __init__(self, platform, command, *args, **kwargs):
         ShellCommand.__init__(self, *args, **kwargs)
         self.addFactoryArguments(platform=platform, MAKE=MAKE)
         self.platform = platform
-        self.command = [MAKE, "check-memory"]
+        self.command = command
 
     def createSummary(self, cmd):
         self.memstats = []
