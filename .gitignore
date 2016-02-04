@@ -14,6 +14,7 @@ tahoe/git/FreeStorm_CentOS6-amd64/
 tahoe/git/FreeStorm_WinXP-x86_py2_6/
 tahoe/git/Kyle_OpenBSD_amd64/
 tahoe/git/MM_netbsd5_i386_warp/
+tahoe/git/MM_netbsd7_i386_warp/
 tahoe/git/Marcus_Cygwin_WinXP/
 tahoe/git/Markus_slackware64_current/
 tahoe/git/Markus_slackware64_v14_0/
@@ -44,6 +45,8 @@ pycryptopp-git/FreeStorm_windows-mingw32-py26/
 pycryptopp-git/Kyle_OpenBSD-amd64/
 pycryptopp-git/MM_netbsd5_i386_warp/
 pycryptopp-git/MM_netbsd5_i386_warp_syslib/
+pycryptopp-git/MM_netbsd7_i386_warp/
+pycryptopp-git/MM_netbsd7_i386_warp_syslib/
 pycryptopp-git/Randy_FreeBSD-amd64/
 pycryptopp-git/atlas1_natty/
 pycryptopp-git/atlas1_natty_syslib/
