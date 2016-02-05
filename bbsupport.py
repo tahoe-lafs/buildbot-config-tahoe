@@ -573,6 +573,7 @@ class TestFromEgg(PythonCommand):
 class LineCount(ShellCommand):
     name = "line-count"
     description = ["counting", "lines"]
+    descriptionDone = ["linecount"]
     flunkOnFailure = False
 
     def createSummary(self, log):
