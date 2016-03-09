@@ -146,6 +146,26 @@ class TestDeprecations(PythonCommand):
         if warnings:
             self.addCompleteLog("warnings", "\n".join(sorted(warnings))+"\n")
 
+class TestDeprecationsWithTox(ShellCommand):
+    warnOnFailure = False
+    flunkOnFailure = False
+    name = "deprecations"
+    description = ["testing", "deprecations"]
+    descriptionDone = ["test", "deprecations"]
+    logfiles = {"test.log": "_trial_temp/test.log"}
+
+    def createSummary(self, log):
+        # create a logfile with the de-duped DeprecationWarning messages
+        warnings = set()
+        warn_re = re.compile(r'DeprecationWarning: ')
+        for line in log.readlines(): # add stderr
+            line = line.strip()
+            mo = warn_re.search(line)
+            if mo:
+                warnings.add(line)
+        if warnings:
+            self.addCompleteLog("warnings", "\n".join(sorted(warnings))+"\n")
+
 class TestOldDep(PythonCommand):
     """
     Run a special test to confirm that the build system builds a new
