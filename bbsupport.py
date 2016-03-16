@@ -130,7 +130,7 @@ class TrialCommand(ShellCommand):
         ShellCommand.__init__(self, *args, **kwargs)
         self.addLogObserver('stdio', TrialTestCaseCounter())
 
-    def orig_commandComplete(self, cmd):
+    def commandComplete(self, cmd):
         # figure out all status, then let the various hook functions return
         # different pieces of it
 
@@ -204,33 +204,6 @@ class TrialCommand(ShellCommand):
         self.results = results
         self.text = text
         self.text2 = [text2]
-
-    def commandComplete(self, cmd):
-        self.orig_commandComplete(cmd)
-        output = cmd.logs['test.log'].getText()
-        in_versions = False
-        versions = []
-        for line in output.splitlines():
-            if in_versions:
-                if "-->" in line:
-                    break
-                mo = re.search(r'\[-\] (\w+-\S*)$', line)
-                if mo:
-                    s = mo.group(1)
-                    name,version = s.split("-", 1)
-                    if name == "python":
-                        versions.append("py%s" % version)
-                    elif name == "twisted":
-                        versions.append("tw%s" % version)
-                    elif name == "pyopenssl":
-                        versions.append("pS%s" % version)
-            else:
-                if ("--> foolscap.test.test__versions.Versions.test_record <--"
-                    in line):
-                    in_versions = True
-                    continue
-        if versions:
-            self.text.append(" ".join(versions))
 
     def createSummary(self, loog):
         output = loog.getText()
