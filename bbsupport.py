@@ -292,6 +292,10 @@ class TrialCommand(ShellCommand):
             lines = sorted(warnings.keys())
             self.addCompleteLog("warnings", "".join(lines))
 
+        timings = parse_timings(loog)
+        if timings:
+            self.addCompleteLog("timings", timings)
+
     def evaluateCommand(self, cmd):
         return self.results
 
