@@ -76,6 +76,34 @@ class BuildTahoe(PythonCommand):
     descriptionDone = ["build"]
     python_command = ["setup.py", "-v", "build"]
 
+def parse_timings(log):
+    # scan the log, measure time consumed per test, show a sorted list
+    # with the most time-consuming test at the top
+    last_test = None
+    tests = []
+    test_re = re.compile(r'^(allmydata\.test\.\S+) \.\.\.')
+    time_re = re.compile(r'^\(([\d\.]+) secs\)')
+    for line in log.readlines():
+        line = line.strip()
+        mo = test_re.search(line)
+        if mo:
+            last_test = mo.group(1)
+            continue
+        if not last_test:
+            continue
+        mo = time_re.search(line.strip())
+        if mo:
+            t0 = float(mo.group(1))
+            tests.append( (t0, last_test) )
+            last_test = None
+    tests.sort()
+    tests.reverse()
+    if tests:
+        timings = "\n".join(["%7s seconds: %s" % (("%.3f" % t[0]), t[1])
+                             for t in tests]) + "\n"
+        return timings
+    return None
+
 class BuiltTest(PythonCommand):
     """
     Step to run the test suite after a typical installation of tahoe done
@@ -96,30 +124,8 @@ class BuiltTest(PythonCommand):
         self.addFactoryArguments(test_suite=test_suite)
 
     def createSummary(self, log):
-        # scan the log, measure time consumed per test, show a sorted list
-        # with the most time-consuming test at the top
-        last_test = None
-        tests = []
-        test_re = re.compile(r'^(allmydata\.test\.\S+) \.\.\.')
-        time_re = re.compile(r'^\(([\d\.]+) secs\)')
-        for line in log.readlines():
-            line = line.strip()
-            mo = test_re.search(line)
-            if mo:
-                last_test = mo.group(1)
-                continue
-            if not last_test:
-                continue
-            mo = time_re.search(line.strip())
-            if mo:
-                t0 = float(mo.group(1))
-                tests.append( (t0, last_test) )
-                last_test = None
-        tests.sort()
-        tests.reverse()
-        if tests:
-            timings = "\n".join(["%7s seconds: %s" % (("%.3f" % t[0]), t[1])
-                                 for t in tests]) + "\n"
+        timings = parse_timings(log)
+        if timings:
             self.addCompleteLog("timings", timings)
 
 class TrialCommand(ShellCommand):
