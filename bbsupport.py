@@ -130,6 +130,7 @@ class BuiltTest(PythonCommand):
 
 class TrialCommand(ShellCommand):
     # a ShellCommand, but parses trial output
+    progressMetrics = ('output', 'tests', 'test.log')
     logfiles = {"test.log": "_trial_temp/test.log"}
 
     def __init__(self, *args, **kwargs):
