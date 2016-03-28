@@ -343,6 +343,8 @@ class TestDeprecationsWithTox(ShellCommand):
         # create a logfile with the de-duped DeprecationWarning messages
         warnings = set()
         warn_re = re.compile(r'DeprecationWarning: ')
+        # XXX: we only get stdout here, but the warning messages are in
+        # stderr. Do we need a "new-style build step" to get stderr?
         for line in log.readlines(): # add stderr
             line = line.strip()
             mo = warn_re.search(line)
