@@ -1,4 +1,3 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -8,54 +7,16 @@
 <body>
 <h1>Welcome to the Tahoe-LAFS Buildbot!</h1>
 
-<p>See also <a href="http://tahoe-lafs.org/buildbot-zfec">the zfec buildbot</a> and <a href="http://tahoe-lafs.org/buildbot-pycryptopp">the pycryptopp buildbot</a>.</p>
+<p>See also <a href="https://tahoe-lafs.org/buildbot-zfec">the zfec buildbot</a> and <a href="https://tahoe-lafs.org/buildbot-pycryptopp">the pycryptopp buildbot</a>.</p>
 
 <ul>
-  <li><a href="waterfall?show_events=true&branch=&builder=lucid-amd64&builder=Atlas+ubuntu+natty&builder=Randy+FreeBSD-amd64&builder=MM+netbsd5+i386+warp&builder=tarballs&builder=clean&builder=memcheck-32&builder=speed-DSL&builder=speed-colo&reload=none">Supported Builders</a>
-  -- all the builders that we expect to keep green. If one of these reports a failure, we fix it right away.  Whenever a patch is committed all of the test builders are run, and if all of the Supported test builders pass tests then the package-creation builders are run. See <a href="http://tahoe-lafs.org/trac/tahoe/wiki/BuildbotPolicy">the BuildbotPolicy page</a> on the wiki.</li>
+  <li><a href="waterfall?tag=supported">Supported Builders</a>
+  -- all the builders that we expect to keep green. If one of these reports a failure, we fix it right away. See <a href="https://tahoe-lafs.org/trac/tahoe/wiki/BuildbotPolicy">the BuildbotPolicy page</a> on the wiki.</li>
 
-  <li>Unsupported Builders -- the builders that we aren't currently committing to keep green. Hopefully they will level-up to Supported Builders in the future, especially if you offer to help.
-    <ul>
-      <li><a href="waterfall?show_events=true&builder=memcheck-64&builder=speed-fiber">offline build/packaging feature</a>
-      <li><a href="waterfall?show_events=true&builder=FranXois+lenny-armv5tel&builder=Ruben+Fedora">unsupported platform</a>
-      <li><a href="waterfall?show_events=true&builder=Arthur+lenny+c7+32bit">slow</a>
-      <li><a href="waterfall?show_events=true&branch=&builder=Eugen+lenny-amd64&builder=Kyle+OpenBSD+amd64&builder=FreeStorm+CentOS5-i386&reload=none" >darcs-vs-HTTPS problem</a></li>
-    </ul>
-</li>
+  <li><a href="waterfall?tag=unsupported">Unsupported Builders</a> -- the builders that we aren't currently committing to keep green. Hopefully they will level-up to Supported Builders in the future, especially if you offer to help.
+  </li>
 
   <li><a href="waterfall?show_events=true">All Builders</a></li>
-  <li><a href="waterfall?builder=Eugen+lenny-amd64&builder=FranXois+Lenny-armv5tel&builder=lucid-amd64&builder=Ruben+Fedora&builder=Arthur+lenny+c7+32bit&builder=Kyle+OpenBSD+amd64&builder=Randy+FreeBSD-amd64&builder=clean&builder=FreeStorm+WinXP-x86+py2.6&builder=Dcoder+Win7-64+py2.6&builder=FreeStorm+CentOS5-i386&builder=Brian+ubuntu-i386+linode&builder=FreeStorm+Win7-amd64-mingw+py2.6&builder=Marcus+Cygwin/WinXP">Unit Tests Waterfall</a>
-  shows change-triggered unit tests (including the 'make clean' test) on
-  all platforms (including Unsupported). It does not include tarballs or periodic
-  memory/speed tests.
-  <ul>
-    <li><a href="http://tahoe-lafs.org/tahoe-lafs-coverage/current/">current code coverage data</a></li>
-    <li><a href="http://tahoe-lafs.org/tahoe-lafs-coverage-graph/hanford.allmydata.com-tahoe_lafs_coverage2.html">code uncoverage graph</a></li>
-  </ul>
-  </li>
-  <li><a href="waterfall?builder=FreeStorm+WinXP-x86+py2.6&builder=Dcoder+Win7-64+py2.6&builder=FreeStorm+Win7-amd64-mingw+py2.6&builder=Marcus+Cygwin/WinXP">Windows Waterfall</a> shows all Windows builders (including Unsupported)</li>
-
-  <li><a href="waterfall?show_events=true">No-Compiler Waterfall</a>
-  shows buildslaves with no compiler.</li>
-
-  <li><a href="waterfall?show_events=true&builder=tarballs&builder=clean">Packaging Waterfall</a> shows the builders which create tarballs and test packaging features.</li>
-
-  <li><a href="waterfall?show_events=true&builder=memcheck-32&builder=memcheck-64&builder=speed-DSL&builder=speed-fiber&builder=speed-colo&reload=none">Performance Waterfall</a>
-  shows memory-footprint tests and throughput/latency tests, run after each
-  checkin. The throughput/latency tests are also run periodically. Graphs of the
-  results can be found on the
-  <a href="http://tahoe-lafs.org/trac/tahoe/wiki/Performance">Performance
-  page</a>:
-  <ul>
-    <li><a href="http://tahoe-lafs.org/tahoe-lafs-coverage-graph/hanford.allmydata.com-tahoe_memstats.html">memory-32</a></li>
-    <li><a href="http://tahoe-lafs.org/tahoe-lafs-coverage-graph/hanford.allmydata.com-tahoe_memstats_64.html">memory-64</a></li>
-    <li><a href="http://tahoe-lafs.org/tahoe-lafs-coverage-graph/hanford.allmydata.com-tahoe_speedstats_rate.html">throughput rate</a></li>
-    <li><a href="http://tahoe-lafs.org/tahoe-lafs-coverage-graph/hanford.allmydata.com-tahoe_speedstats_rate_SSK.html">throughput rate for mutable files</a></li>
-    <li><a href="http://tahoe-lafs.org/tahoe-lafs-coverage-graph/hanford.allmydata.com-tahoe_speedstats_delay.html">latency-per-file</a></li>
-    <li><a href="http://tahoe-lafs.org/tahoe-lafs-coverage-graph/hanford.allmydata.com-tahoe_speedstats_delay_SSK.html">latency for mutable files</a></li>
-    <li><a href="http://tahoe-lafs.org/tahoe-lafs-coverage-graph/hanford.allmydata.com-tahoe_speedstats_SSK_creation.html">creation time for mutable files</a> (dominated by RSA keypair generation)</li>
-  </ul>
-  </li>
 
   <li>The <a href="one_box_per_builder">Latest Build</a> for each builder is
   here.</li>
@@ -65,6 +26,8 @@
 
   <li>Automated testers operated by other people that are testing Tahoe-LAFS:
     <ul>
+      <li><a href="https://travis-ci.org/tahoe-lafs/tahoe-lafs">Travis-CI: Tahoe-LAFS</a>, basic Linux unit-test coverage</li>
+      <li><a href="https://ci.appveyor.com/project/tahoe-lafs/tahoe-lafs">AppVeyor: Tahoe-LAFS</a>, Windows coverage</li>
       <li><a href="http://hydra.nixos.org/job/nixpkgs/trunk/tahoelafs">Nix Hydra tester for Tahoe-LAFS</a> — the <a href="http://nixos.org">Nix project</a> maintains a patched version of Tahoe-LAFS as a NixPkg. This is the page on their automated test system which runs tests on Tahoe-LAFS on NixOS.</li>
     </ul>
   </li>
@@ -72,7 +35,7 @@
   <br />
   <li><a href="buildslaves">Buildslave</a> information</li>
   <li><a href="changes">ChangeSource</a> information.</li>
-  <li><a href="http://tahoe-lafs.org/">Back to the Tahoe-LAFS Trac</a></li>
+  <li><a href="https://tahoe-lafs.org/trac">Back to the Tahoe-LAFS Trac</a></li>
   <li><a href="about">About this Buildbot</a></li>
 </ul>
 
