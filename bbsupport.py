@@ -358,13 +358,18 @@ class TestDeprecationsWithTox(ShellCommand):
                 self.deprecation_count = int(mo.group(1))
 
     def getText(self, cmd, results):
+        text = ShellCommand.getText(self, cmd, results)
         if self.deprecation_count is None:
-            text = ["test", "deprecations"]
+            return text
         elif self.deprecation_count == 0:
-            text = ["no", "deprecation", "warnings"]
+            return text + ["no", "warnings"]
         else:
-            text = [str(self.deprecation_count), "deprecation", "warnings"]
-        return text
+            return text + [str(self.deprecation_count), "warnings"]
+
+class TestUpcomingDeprecationsWithTox(TestUpcomingDeprecationsWithTox):
+    name = "upcoming-deprecations"
+    description = ["testing", "upcoming", "deprecations"]
+    descriptionDone = ["test", "upcoming", "deprecations"]
 
 class TestOldDep(PythonCommand):
     """
