@@ -366,7 +366,7 @@ class TestDeprecationsWithTox(ShellCommand):
         else:
             return text + [str(self.deprecation_count), "warnings"]
 
-class TestUpcomingDeprecationsWithTox(TestUpcomingDeprecationsWithTox):
+class TestUpcomingDeprecationsWithTox(TestDeprecationsWithTox):
     name = "upcoming-deprecations"
     description = ["testing", "upcoming", "deprecations"]
     descriptionDone = ["test", "upcoming", "deprecations"]
