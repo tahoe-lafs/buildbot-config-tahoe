@@ -338,33 +338,20 @@ class TestDeprecationsWithTox(ShellCommand):
     description = ["testing", "deprecations"]
     descriptionDone = ["test", "deprecations"]
     logfiles = {"test.log": "_trial_temp/test.log",
-                "stderr": "_trial_temp/stderr.log"}
+                "warnings": "_trial_temp/deprecation-warnings.log"}
     deprecation_count = None
 
     def createSummary(self, log):
-        count_re = re.compile(r"^ERROR: (\d+) deprecation warnings found")
-        none_re = re.compile(r"^no deprecation warnings$")
-
-        # The count is written to stdout (on the last line of trial output,
-        # but there are a few more lines of tox output after that). The
-        # warnings themselves go to stderr, and are available in the 'stderr'
-        # logfile.
-        for line in log.readlines(): # this is stdout, a b.s.LogFile instance
-            line = line.strip()
-            if none_re.search(line):
-                self.deprecation_count = 0
-            mo = count_re.search(line)
-            if mo:
-                self.deprecation_count = int(mo.group(1))
+        self.deprecation_count = len(self.getLog("warnings").readlines())
 
     def getText(self, cmd, results):
         text = ShellCommand.getText(self, cmd, results)
         if self.deprecation_count is None:
             return text
         elif self.deprecation_count == 0:
-            return text + ["no", "warnings"]
+            return text + ["no warnings"]
         else:
-            return text + [str(self.deprecation_count), "warnings"]
+            return text + ["%d warnings" % self.deprecation_count]
 
 class TestUpcomingDeprecationsWithTox(TestDeprecationsWithTox):
     name = "upcoming-deprecations"
