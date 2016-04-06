@@ -342,7 +342,7 @@ class TestDeprecationsWithTox(ShellCommand):
     deprecation_count = None
 
     def createSummary(self, log):
-        count_re = re.compile(r"^ERROR: (%d+) deprecation warnings found")
+        count_re = re.compile(r"^ERROR: (\d+) deprecation warnings found")
         none_re = re.compile(r"^no deprecation warnings$")
 
         # The count is written to stdout (on the last line of trial output,
