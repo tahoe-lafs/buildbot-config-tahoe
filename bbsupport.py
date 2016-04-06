@@ -332,26 +332,39 @@ class TestDeprecations(PythonCommand):
             self.addCompleteLog("warnings", "\n".join(sorted(warnings))+"\n")
 
 class TestDeprecationsWithTox(ShellCommand):
-    warnOnFailure = False
+    warnOnFailure = True
     flunkOnFailure = False
     name = "deprecations"
     description = ["testing", "deprecations"]
     descriptionDone = ["test", "deprecations"]
-    logfiles = {"test.log": "_trial_temp/test.log"}
+    logfiles = {"test.log": "_trial_temp/test.log",
+                "stderr": "_trial_temp/stderr.log"}
+    deprecation_count = None
 
     def createSummary(self, log):
-        # create a logfile with the de-duped DeprecationWarning messages
-        warnings = set()
-        warn_re = re.compile(r'DeprecationWarning: ')
-        # XXX: we only get stdout here, but the warning messages are in
-        # stderr. Do we need a "new-style build step" to get stderr?
-        for line in log.readlines(): # add stderr
+        count_re = re.compile(r"^ERROR: (%d+) deprecation warnings found")
+        none_re = re.compile(r"^no deprecation warnings$")
+
+        # The count is written to stdout (on the last line of trial output,
+        # but there are a few more lines of tox output after that). The
+        # warnings themselves go to stderr, and are available in the 'stderr'
+        # logfile.
+        for line in log.readlines(): # this is stdout, a b.s.LogFile instance
             line = line.strip()
-            mo = warn_re.search(line)
+            if none_re.search(line):
+                self.deprecation_count = 0
+            mo = count_re.search(line)
             if mo:
-                warnings.add(line)
-        if warnings:
-            self.addCompleteLog("warnings", "\n".join(sorted(warnings))+"\n")
+                self.deprecation_count = int(mo.group(1))
+
+    def getText(self, cmd, results):
+        if self.deprecation_count is None:
+            text = ["test", "deprecations"]
+        elif self.deprecation_count == 0:
+            text = ["no", "deprecation", "warnings"]
+        else:
+            text = [str(self.deprecation_count), "deprecation", "warnings"]
+        return text
 
 class TestOldDep(PythonCommand):
     """
