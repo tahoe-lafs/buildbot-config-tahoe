@@ -4,6 +4,8 @@
 twistd.*
 http.log*
 state.sqlite
+state.sqlite-shm
+state.sqlite-wal
 
 tahoe/Atlas_ubuntu_natty/
 tahoe/Dcoder_Win7-64_py2_6/
@@ -35,6 +37,8 @@ tahoe/Ubuntu_wily_15_10/
 tahoe/sickness_OpenBSD_5_6_x86_py2_7/
 tahoe/Daira_Win7-64_py2_7/
 tahoe/Warner_OS-X_10_11_py2_7
+tahoe/deprecations
+tahoe/Warner_rpi3
 
 tahoe/tahoe-memstats-32.out
 tahoe/tahoe-memstats-64.out
