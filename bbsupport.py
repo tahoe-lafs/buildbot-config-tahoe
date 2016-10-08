@@ -349,7 +349,7 @@ class TestDeprecationsWithTox(ShellCommand):
         if self.deprecation_count is None:
             return text
         elif self.deprecation_count == 0:
-            return text + ["no warnings"]
+            return text + ["clean"]
         else:
             return text + ["%d warnings" % self.deprecation_count]
 
