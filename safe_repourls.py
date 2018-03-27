@@ -1,7 +1,5 @@
 
 # the webhook sends us: https://github.com/tahoe-lafs/tahoe-lafs
-# We used to replace this with git: (because some buildslaves had problems
-# with SSL), but now we don't.
 
 from zope.interface import implements
 from buildbot.interfaces import IRenderable
@@ -20,4 +18,3 @@ class GoodRepo:
                     " (will only accept: %s)" % (repourl, ",".join(self.repos)))
             raise ValueError("refusing to build from unsafe repo, see logs")
         return repourl
-
