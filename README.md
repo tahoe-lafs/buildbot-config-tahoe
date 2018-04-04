@@ -25,6 +25,10 @@ The first path given to ``RemoteForward`` is the remote path.
 The per-user-identifier in this path avoids a conflict between multiple clients logging in to the buildmaster with this configuration at the same time.
 Take note of the remote path for the next steps.
 
+Note that the ``sops keyservice`` command will keep running after the SSH session completes.
+Future SSH sessions will not spawn additional keyservices, though.
+You can also skip this ssh configuration and run the keyservice manually, of course.
+
 ### Deploy Updated Secrets
 
 This is the only step which is typically executed on the buildmaster.
