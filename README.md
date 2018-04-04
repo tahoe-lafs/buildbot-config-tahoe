@@ -29,6 +29,9 @@ Note that the ``sops keyservice`` command will keep running after the SSH sessio
 Future SSH sessions will not spawn additional keyservices, though.
 You can also skip this ssh configuration and run the keyservice manually, of course.
 
+Also note that this use of ``sops keyservice`` may be vulnerable to attackers with privileges on the target host.
+Consider this when engaging in this workflow.
+
 ### Deploy Updated Secrets
 
 This is the only step which is typically executed on the buildmaster.
