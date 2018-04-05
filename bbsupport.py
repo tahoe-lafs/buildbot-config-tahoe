@@ -1,6 +1,8 @@
 import re, StringIO
+from twisted.python import log
 from buildbot.steps.shell import ShellCommand, WithProperties, Compile
 from buildbot.status.builder import FAILURE, SUCCESS, WARNINGS, SKIPPED
+from buildbot.status.github import GitHubStatus
 from buildbot.steps.python_twisted import TrialTestCaseCounter, countFailedTests
 
 class PythonCommand(ShellCommand):
@@ -1038,3 +1040,56 @@ class CheckSpeed(ShellCommand):
 
         f.close()
         return text
+
+class FilteredGitHubStatus(GitHubStatus):
+    """
+    Only report status for builders with the `supported` tag.
+    """
+    def __init__(self, tags, *a, **kw):
+        self._required_tags = tags
+        GitHubStatus.__init__(self, *a, **kw)
+
+    def builderAdded(self, name_, builder_):
+        if builder_.matchesAnyTag(self._required_tags):
+            return GitHubStatus.builderAdded(self, name_, builder_)
+        return None
+
+    def _getGitHubRepoProperties(self, build):
+        """
+        Extend the status with a context revealing the origin of the information
+        (ie, this buildbot build).
+        """
+        d = GitHubStatus._getGitHubRepoProperties(self, build)
+        def extend_status(status):
+            status.update({
+                "context": "buildbot/" + build.builder.name,
+            })
+            return status
+        d.addCallback(extend_status)
+        return d
+
+    def _sendGitHubStatus(self, status):
+        """
+        Send status to GitHub API.
+        """
+        d = self._github.repos.createStatus(
+            repo_user=status['repoOwner'].encode('utf-8'),
+            repo_name=status['repoName'].encode('utf-8'),
+            sha=status['sha'].encode('utf-8'),
+            state=status['state'].encode('utf-8'),
+            target_url=status['targetURL'].encode('utf-8'),
+            description=status['description'].encode('utf-8'),
+            context=status['context'].encode('utf-8'),
+        )
+
+        success_message = (
+            'Status "%(state)s" sent for '
+            '%(repoOwner)s/%(repoName)s at %(sha)s.'
+        ) % status
+        error_message = (
+            'Fail to send status "%(state)s" for '
+            '%(repoOwner)s/%(repoName)s at %(sha)s.'
+        ) % status
+        d.addCallback(lambda result: log.msg(success_message))
+        d.addErrback(lambda failure: log.err(failure, error_message))
+        return d
