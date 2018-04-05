@@ -1,7 +1,7 @@
 project: "tahoe-lafs"
 default_repourl: "https://github.com/tahoe-lafs/tahoe-lafs"
 allowed_hosts:
-  - "github.com":
+  "github.com":
       schemes: &schemes
         - "http"
         - "https"
@@ -14,6 +14,6 @@ allowed_hosts:
         - "david415"
         - "exarkun"
         - "meejah"
-  - "tahoe-lafs.org":
+  "tahoe-lafs.org":
       users: *users
       schemes: *schemes
