@@ -5,8 +5,7 @@ allowed_hosts:
       schemes: &schemes
         - "http"
         - "https"
-      # Lowercased user/organization name for repositories from which to build
-      # PRs.
+      # User/organization name for repositories from which to build PRs.
       users: &users
         - "tahoe-lafs"
         - "warner"
@@ -16,7 +15,7 @@ allowed_hosts:
         - "david415"
         - "exarkun"
         - "meejah"
-        - "leastauthority"
+        - "LeastAuthority"
   "tahoe-lafs.org":
       users: *users
       schemes: *schemes
