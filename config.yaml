@@ -1,6 +1,7 @@
 project: "tahoe-lafs"
 default_repourl: "https://github.com/tahoe-lafs/tahoe-lafs"
 github_status_reporting: false
+irc_status_reporting: false
 allowed_hosts:
   "github.com":
       schemes: &schemes
