@@ -1,3 +1,9 @@
+**This used to be the CI configuration for tahoe-lafs/tahoe-lafs.
+It is no longer used.
+At the time this repository was archived,
+the project has switched to CircleCI and GitHub Actions.
+See the in-repository configuration to learn more.**
+
 # buildbot-config-tahoe
 
 Buildbot config for Tahoe-LAFS and related projects
